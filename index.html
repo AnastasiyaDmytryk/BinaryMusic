@@ -90,8 +90,15 @@
                 console.log(this.count);
                 this.audioContext.resume().then(() => 
                 {
-                       
+                    let currentTime = 0;    
                     this.playBinarySong(this.track);
+                    setTimeout(() => {
+                        this.track="";
+                    this.binaryArray=[];
+                    this.text="";
+                    this.textbox.textContent="";
+                    }, currentTime * 1000);
+                    
                         
                 });
             }
