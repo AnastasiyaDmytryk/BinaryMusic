@@ -15,17 +15,38 @@
                 this.note;
                 this.duration=0.5;
                 this.text='';
+                this.textchar='';
                 this.textbox = document.getElementById("textbox");
+                this.textbox.textContent=this.textchar;
                 document.addEventListener("keypress", (event) => this.readKeys(event));
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                document.addEventListener("keydown", (event) => this.deleteChar(event));
             }
 
             readKeys(event) {
-                    this.textbox.textContent+=String.fromCharCode(event.keyCode);
+             
+                    this.textchar+=event.key;
+                    this.textbox.textContent=this.textchar;
                     this.text+=event.keyCode;
                     var kCode = event.keyCode;
                     var binaryCode = parseInt(kCode, 10).toString(2).padStart(4, "0");
                     this.track += binaryCode;
+            }
+            deleteChar(event)
+            {
+          
+            
+                if(event.keyCode===8)
+                {
+                    console.log("delete");
+                    this.text=this.text.substring(0,this.text.length-1);
+                    this.textchar=this.textchar.substring(0,this.textchar.length-1);
+                    this.textbox.textContent=this.textchar;
+                   
+                   
+
+                    
+                }
             }
 
             playNote(note, length) {
@@ -67,17 +88,16 @@
                 
                     this.binaryArray.push(temp);
                 }
-                console.log(this.binaryArray);
+             
                 var notes = ['C','C#', 'D','D#', 'E', 'F','F#', 'G','G#', 'A','A#', 'B'];
                 var durations = [0.5, 1, 0.5, 1];
                 let currentTime = 0;
                 var duration = 0.75;
                 for (var i = 0; i < this.binaryArray.length; i++) {
                     this.note=parseInt(this.binaryArray[i],2)/3;
-                    console.log(this.note);
+
                     
 
-                    console.log("playing sound");
                     setTimeout(() => {
                         this.playNote(this.note, duration);
                     }, currentTime * 350);
@@ -87,7 +107,7 @@
             }
 
             PlayMusic() {
-                console.log(this.count);
+         
                 this.audioContext.resume().then(() => 
                 {
                     let currentTime = 0;    
@@ -96,6 +116,7 @@
                         this.track="";
                     this.binaryArray=[];
                     this.text="";
+                    this.textchar="";
                     this.textbox.textContent="";
                     }, currentTime * 1000);
                     
@@ -168,6 +189,6 @@
             box-shadow: inset 0 0 30px 30px black;
             z-index: 1; /* Ensures the shadow overlay is on top */
         }
-	    </style>
+        </style>
 </div>
 </html>
