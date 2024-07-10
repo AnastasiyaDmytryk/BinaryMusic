@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html >
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fairy Sounds</title>
+    <script>
+        class MakeSound {
+            constructor() {
+                this.track = '';
+                this.stopStatus = false;
+                this.count = 0;
+                this.binaryArray=[];
+                this.note;
+                this.duration=0.5;
+                this.text='';
+                this.textbox = document.getElementById("textbox");
+                document.addEventListener("keypress", (event) => this.readKeys(event));
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            readKeys(event) {
+                    this.textbox.textContent+=String.fromCharCode(event.keyCode);
+                    this.text+=event.keyCode;
+                    var kCode = event.keyCode;
+                    var binaryCode = parseInt(kCode, 10).toString(2).padStart(4, "0");
+                    this.track += binaryCode;
+            }
+
+            playNote(note, length) {
+                if (!isFinite(length)) {
+                    length = 0.75;
+                }
+
+                var oscillator = this.audioContext.createOscillator();
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.value = note;
+
+                    var gainNode = this.audioContext.createGain();
+                    gainNode.gain.value = 1.0;
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    const attackTime = 0.01;
+                    const releaseTime = 0.1;
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + attackTime);
+                    gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + length - releaseTime);
+
+
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + length);
+            }
+
+            playBinarySong(binaryString) {
+                let char=binaryString.length;
+                
+                for(let i=0; i<char-1;i+=10 )
+                {
+                    var temp="";
+                    for(let j =i;j<10+i; j++)
+                    {
+                        temp+=binaryString[j];
+
+                    }
+                
+                    this.binaryArray.push(temp);
+                }
+                console.log(this.binaryArray);
+                var notes = ['C','C#', 'D','D#', 'E', 'F','F#', 'G','G#', 'A','A#', 'B'];
+                var durations = [0.5, 1, 0.5, 1];
+                let currentTime = 0;
+                var duration = 0.75;
+                for (var i = 0; i < this.binaryArray.length; i++) {
+                    this.note=parseInt(this.binaryArray[i],2)/3;
+                    console.log(this.note);
+                    
+
+                    console.log("playing sound");
+                    setTimeout(() => {
+                        this.playNote(this.note, duration);
+                    }, currentTime * 350);
+                    currentTime += duration;
+                    
+                }
+            }
+
+            PlayMusic() {
+                console.log(this.count);
+                this.audioContext.resume().then(() => 
+                {
+                       
+                    this.playBinarySong(this.track);
+                        
+                });
+            }
+        }
+    </script>
+</head>
+
+<body  >
+
+   
+    <div id="border"style="margin-left:50%; width:35%; height:50%;margin-top: 2%;padding-block:3%; border-style: dotted; border-radius: 45%; border-width: 5px; border-color:#FF8429" >
+        <t style="   background: #F7A6E2; border-radius: 50%; opacity: 75%;padding-block: 7%; font-size:150%;  ">Type anything and watch it transform into sound ✨</t>
+     </div>
+    <div style=" margin-left: 20%; margin-top: 2%;display: flex;">
+        <div  style=" width: 400px; height: 400px;background: #457F64; border-style: dashed; border-color: #FF18D5; border-width: 3px; border-radius: 13%; box-shadow: 10px px rgb(205, 85, 213), -1em 0 .4em #6CA7EB; opacity: 75%;"> <p id="textbox" style="padding-left: 5%;">  </p></div>
+       <img src="fairy.png" >
+
+       <button id="Mix" style="height:25%; width:15%; background: #C3BEC9 ;opacity:75%; border-radius: 50%; padding-block: 3%; margin-top: 30%; font-size:300%; border-width: 100%; z-index: 2; box-shadow: inset 0 0 2px 2px black; color:#FF18D5 " onclick="load.PlayMusic()">Mix</button>
+    </div>
+  
+</body>
+    <script>
+        var load = new MakeSound();
+        var blink=true;
+	function blinky()
+	{
+		
+		var border = document.getElementById("border");
+		if (blink == true)
+		{
+			border.style.borderColor=("#FF29A8");
+			blink=false;
+		}
+		else if (blink==false)
+		{
+			border.style.borderColor=("#FF8429");
+			blink=true;
+
+		}
+
+	}
+	var blinkInterval = setInterval(function() 
+	{
+	  
+	    blinky();
+
+	
+	}, 1000);
+
+    </script>
+    <style>
+        body {
+            margin: 0;
+            background-image: url('backgroundm1.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+            lighting-color: #FF18D5;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 30px 30px black;
+            z-index: 1; /* Ensures the shadow overlay is on top */
+        }
+</div>
+</html>
