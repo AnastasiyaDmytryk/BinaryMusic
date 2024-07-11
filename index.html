@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+	<!DOCTYPE HTML>
 <html >
 
 <head>
@@ -21,7 +21,16 @@
                 document.addEventListener("keypress", (event) => this.readKeys(event));
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 document.addEventListener("keydown", (event) => this.deleteChar(event));
+  
             }
+            intToBinary(num, bits = 8) 
+            {
+             let binaryString = num.toString(2);
+            return binaryString.padStart(bits, '0');
+            }
+
+          
+
 
             readKeys(event) {
              
@@ -32,9 +41,18 @@
                     var binaryCode = parseInt(kCode, 10).toString(2).padStart(4, "0");
                     this.track += binaryCode;
             }
-            deleteChar(event)
+            async deleteChar(event)
             {
-          
+                if (event.keyCode === 91) {
+                let text = await navigator.clipboard.readText();
+                for (let i = 0; i < text.length; i++) 
+                {
+                    this.textchar += text[i];
+                    let binaryCode = this.intToBinary(text.charCodeAt(i), 8);
+                    this.track += binaryCode;
+                }
+                    this.textbox.textContent = this.textchar;
+        }
             
                 if(event.keyCode===8)
                 {
@@ -134,7 +152,9 @@
         <t style="   background: #F7A6E2; border-radius: 50%; opacity: 75%;padding-block: 7%; font-size:150%;  ">Type anything and watch it transform into sound ✨</t>
      </div>
     <div style=" margin-left: 20%; margin-top: 2%;display: flex;">
-        <div  style=" width: 400px; height: 400px;background: #457F64; border-style: dashed; border-color: #FF18D5; border-width: 3px; border-radius: 13%; box-shadow: 10px px rgb(205, 85, 213), -1em 0 .4em #6CA7EB; opacity: 75%;"> <p id="textbox" style="padding-left: 5%;">  </p></div>
+        <div  style=" width: 400px; height: 400px;background: #457F64; border-style: dashed; border-color: #FF18D5; border-width: 3px; border-radius: 13%; box-shadow: 10px px rgb(205, 85, 213), -1em 0 .4em #6CA7EB; opacity: 75%;"> 
+            <p id="textbox" contenteditable="true" style="padding-left: 5%;">  </p>
+        </div>
        <img src="fairy.png" >
 
        <button id="Mix" style="height:25%; width:15%; background: #C3BEC9 ;opacity:75%; border-radius: 50%; padding-block: 3%; margin-top: 30%; font-size:300%; border-width: 100%; z-index: 2; box-shadow: inset 0 0 2px 2px black; color:#FF18D5 " onclick="load.PlayMusic()">Mix</button>
