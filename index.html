@@ -43,7 +43,7 @@
             }
             async deleteChar(event)
             {
-                if (event.keyCode === 91) {
+                if (event.keyCode === 91 || 7) {
                 let text = await navigator.clipboard.readText();
                 for (let i = 0; i < text.length; i++) 
                 {
